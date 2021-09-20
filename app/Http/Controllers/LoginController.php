@@ -22,26 +22,30 @@ class LoginController extends Controller
                     'client_secret' => config('services.passport.client_secret'),
                     'username' => $request->username,
                     'password' => $request->password,
-                    'scope' => '*',
                 ]
             ]);
            
             return $this->validResponse(json_decode($response->getBody(), true));
 
         } catch (\GuzzleHttp\Exception\BadResponseException $e) {
-           
-            if($e->getCode() === 400) {
-                return $this->errorResponse([
-                    "message" => "Please enter a username or a password."
-                ],$e->getCode());
-            } elseif($e->getCode() === 401) {
-                return $this->errorResponse([
-                    "message"=>"Incorrect Credentials. Please try again."
-                ], $e->getCode());
+            if($e->getCode() === 400) 
+            {
+                return $this->errorResponse("Please enter a username or a password.",$e->getCode());
+            } 
+            else if($e->getCode() === 401) 
+            {
+                return $this->errorResponse("Incorrect Credentials. Please try again.", $e->getCode());
             }
-            return $this->errorResponse([
-                "message" => "Something went wrong on the server."
-            ], $e->getCode());
+            return $this->errorResponse("Something went wrong on the server.", $e->getCode());
         }
+    }
+    public function logout()
+    {
+        auth()->user()->tokens->each(function($token, $key) {
+            $token->delete();
+        });
+        return $this->validResponse([
+            "message" => "Successfully Logout"
+        ]);
     }
 }

@@ -24,7 +24,7 @@ class LoginAdminController extends Controller
             return redirect()->intended('users');
         }
   
-        return redirect("login")->withSuccess('Login details are not valid');
+        return redirect("login")->withSuccess('Login details are not valid!');
     }
     public function logout() {
         Auth::logout();

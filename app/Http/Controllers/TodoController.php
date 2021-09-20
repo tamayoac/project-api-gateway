@@ -17,19 +17,17 @@ class TodoController extends Controller
     {
         $this->todoService = $todoService;
     }
-    public function index(Request $request)
+    public function index()
     {
-        $user = $request->user()->id;
-
+        $user = auth()->user()->id;
        
-
         $response = $this->todoService->fetchTodos($user);
 
         return $this->successResponse($response);
     }
     public function store(Request $request )
     {   
-        $user = $request->user()->id;
+        $user = auth()->user()->id;
 
         $response = $this->todoService->createTodos($request->all(), $user);
 
@@ -37,14 +35,20 @@ class TodoController extends Controller
     }
     public function show($todo)
     {
-        return $this->successResponse($this->todoService->fetchTodo($todo));
+        $user = auth()->user()->id;
+
+        return $this->successResponse($this->todoService->fetchTodo($todo, $user));
     }
     public function update(Request $request, $todo)
     {
-        return $this->successResponse($this->todoService->updateTodo($request->all(), $todo));
+        $user = auth()->user()->id;
+
+        return $this->successResponse($this->todoService->updateTodo($request->all(), $todo, $user));
     }
     public function destory($todo)
     {
-        return $this->successResponse($this->todoService->destroyTodo($todo));
+        $user = auth()->user()->id;
+
+        return $this->successResponse($this->todoService->destroyTodo($todo, $user));
     }
 }

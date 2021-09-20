@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -24,22 +25,33 @@ class UserController extends Controller
     }
     public function store(Request $request)
     {
-      
         $rules = [
             'name' => 'required|max:255',
             'email' => 'required|email|unique:users,email',
             'password'=> 'required|min:8|confirmed',
+            'application_id' => 'required',
         ];
 
         $this->validate($request, $rules);
-        
-        $user = $this->user::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
 
-       
+        try {
+            DB::beginTransaction();
+
+            $user = $this->user::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+    
+            $user->applications()->attach($request->application_id);
+
+            $user->roles()->attach(2);
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+        }
+      
         return $this->validResponse($user, Response::HTTP_CREATED);
     }
     public function show($id)

@@ -25,16 +25,16 @@ class TodoService
     {
         return $this->performRequest('POST', "/todos/${user}", $todos);
     } 
-    public function fetchTodo($todo)
+    public function fetchTodo($todo, $user)
     {
-        return $this->performRequest('GET', "/todos/{$todo}");
+        return $this->performRequest('GET', "/todos/{$user}/{$todo}");
     }
-    public function updateTodo($data, $todo)
+    public function updateTodo($data, $todo, $user)
     {
-        return $this->performRequest('PUT', "/todos/{$todo}", $data);
+        return $this->performRequest('PUT', "/todos/{$user}/{$todo}", $data);
     }
-    public function destroyTodo($todo)
+    public function destroyTodo($todo, $user)
     {
-        return $this->performRequest('DELETE', "/todos/{$todo}");
+        return $this->performRequest('DELETE', "/todos/{$user}/{$todo}");
     }
 }

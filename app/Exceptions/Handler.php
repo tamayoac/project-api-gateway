@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use App\Traits\ApiResponser;
+use ErrorException;
 use Throwable;
 use Illuminate\Http\Response;
 use Illuminate\Auth\AuthenticationException;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use GuzzleHttp\Exception\BadResponseException;
 
 class Handler extends ExceptionHandler
 {
@@ -54,11 +56,16 @@ class Handler extends ExceptionHandler
             }
             return redirect()->back()->withErrors($message);
         });
-        $this->renderable(function (AuthenticationException $exception, $request) {
-            
+        $this->renderable(function (AuthenticationException $exception, $request) 
+        {
             return $this->errorResponse($exception->getMessage(), Response::HTTP_UNAUTHORIZED);
         });
+        $this->renderable(function(BadResponseException $exception, $request) {
+          
+            return $this->errorResponse($exception->getMessage(), $exception->getCode());
+        });
         $this->renderable(function (HttpException $exception, $request) {
+            
             if($request->wantsJson()) 
             {
                 $code = $exception->getStatusCode();
@@ -70,7 +77,7 @@ class Handler extends ExceptionHandler
         });
         $this->renderable(function (ModelNotFoundException $exception, $request) {
             $model = strtolower(class_basename($exception->getModel()));
-
+            
             return $this->errorResponse("Does not exist any instance of {$model} with the given id", Response::HTTP_NOT_FOUND);
         });
         

@@ -6,7 +6,7 @@
 <div class="d-flex" id="wrapper">
     <div id="page-content-wrapper">
         @auth
-        <div class="w-full bg-white shadow-sm">
+        <div class="w-full bg-white bg-opacity-0 shadow-sm z-10">
             <div class="flex flex-col max-w-screen-xl px-4 mx-auto md:items-center md:justify-between md:flex-row md:px-6 lg:px-8">
                 <div class="p-4 flex flex-row items-center justify-between">
                     <a href="#" class="text-lg font-semibold tracking-widest text-black uppercase rounded-lg dark-mode:text-white focus:outline-none focus:shadow-outline">Administrator</a>
@@ -25,7 +25,9 @@
           </div>
         @endauth()
         <div class="container-fluid">
+        
             @yield('content')
+            
         </div>
     </div>
 </div>
