@@ -13,12 +13,13 @@ use App\Http\Controllers\{TodoController, UserController, LoginController};
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::post('/login', [LoginController::class, 'login']);
 Route::post('/register', [UserController::class, 'store']);
 
+
+Route::post('/login', [LoginController::class, 'login'])->middleware('is.client');
+
 // Todo App Endpoint 
-Route::middleware('auth:api')->group(function () {
+Route::middleware(['client.todo','auth:api'])->group(function () {
     Route::get('/todos', [TodoController::class, 'index']);
     Route::post('/todos', [TodoController::class, 'store']);
     Route::get('/todos/{todos}', [TodoController::class, 'show']);
@@ -28,3 +29,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/user/me', [UserController::class, 'me']);
     Route::post('/logout', [LoginController::class, 'logout']);
 });
+
+
+
+
+

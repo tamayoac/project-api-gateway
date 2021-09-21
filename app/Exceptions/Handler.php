@@ -48,8 +48,9 @@ class Handler extends ExceptionHandler
         });
         $this->renderable(function (ValidationException $exception, $request) 
         {    
+            
             $message = $exception->validator->getMessageBag();
-
+        
             if($request->wantsJson())
             {   
                 return $this->errorResponse($message, Response::HTTP_UNPROCESSABLE_ENTITY);

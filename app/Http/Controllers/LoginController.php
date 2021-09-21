@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class LoginController extends Controller
 {
     use ApiResponser;
-
+   
     public function login(Request $request)
     {
         $http = new \GuzzleHttp\Client;
