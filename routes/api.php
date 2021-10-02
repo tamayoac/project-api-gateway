@@ -26,6 +26,7 @@ Route::middleware(['client.todo','auth:api'])->group(function () {
     Route::put('/todos/{todos}', [TodoController::class, 'update']);
     Route::patch('/todos/{todos}', [TodoController::class, 'update']);
     Route::delete('/todos/{todos}', [TodoController::class, 'destory']);
+    Route::get('/todos/{todos}', [TodoController::class, 'updateStatus']);
     Route::get('/user/me', [UserController::class, 'me']);
     Route::post('/logout', [LoginController::class, 'logout']);
 });

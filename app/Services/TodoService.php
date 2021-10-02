@@ -37,4 +37,8 @@ class TodoService
     {
         return $this->performRequest('DELETE', "/todos/{$user}/{$todo}");
     }
+    public function updateStatus($todo, $user)
+    {
+        return $this->performRequest('GET', "/todos/{$user}/{$todo}");
+    }
 }

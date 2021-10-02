@@ -51,4 +51,10 @@ class TodoController extends Controller
 
         return $this->successResponse($this->todoService->destroyTodo($todo, $user));
     }
+    public function updateStatus($todo)
+    {
+        $user = auth()->user()->id;
+
+        return $this->successResponse($this->todoService->updateStatus($todo, $user));
+    }
 }

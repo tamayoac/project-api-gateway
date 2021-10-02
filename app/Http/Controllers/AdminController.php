@@ -11,8 +11,12 @@ class AdminController extends Controller
     public function index()
     {
         abort_if(!Auth::user(), 403);
-        
-        $users = User::all();
+
+        $users = User::whereHas('roles', function($q) {
+            $q->where('role_id', 2);
+        })->get();
+
+        $users->load('applications');
 
         return view('admin.users.index', [
             'users' => $users

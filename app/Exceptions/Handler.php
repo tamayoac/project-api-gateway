@@ -12,6 +12,7 @@ use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Exception\ClientException;
 
 class Handler extends ExceptionHandler
 {
@@ -48,7 +49,6 @@ class Handler extends ExceptionHandler
         });
         $this->renderable(function (ValidationException $exception, $request) 
         {    
-            
             $message = $exception->validator->getMessageBag();
         
             if($request->wantsJson())
@@ -65,8 +65,15 @@ class Handler extends ExceptionHandler
           
             return $this->errorResponse($exception->getMessage(), $exception->getCode());
         });
+        $this->renderable(function( ClientException $exception, $request) {
+
+            $message = $exception->getResponse()->getBody();
+           
+            $code = $exception->getCode();
+
+            return $this->errorResponse($message ,$code);
+        });
         $this->renderable(function (HttpException $exception, $request) {
-            
             if($request->wantsJson()) 
             {
                 $code = $exception->getStatusCode();

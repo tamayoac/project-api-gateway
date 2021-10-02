@@ -16,6 +16,7 @@
         <div class="bg-gradient-to-r from-green-400 to-blue-500 rounded-sm shadow-sm m-4 p-3">
             <div class="flex justify-between">
                 <div class="text-white">{{$user->name}}</div>
+                <div class="text-white">{{$user->applications->first()->name}}</div>
                 <div class="text-white">
                     <i class="fas fa-envelope px-3"></i>
                     <i class="fas fa-eye"></i>
