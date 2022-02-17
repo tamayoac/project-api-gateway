@@ -17,18 +17,19 @@ class LoginAdminController extends Controller
             'email' => 'required',
             'password' => 'required',
         ]);
-      
+
         $credentials = $request->only('email', 'password');
-        
+
         if (Auth::attempt($credentials)) {
-            return redirect()->intended('users');
+            return redirect()->intended('dashboard');
         }
-  
+
         return redirect("login")->withSuccess('Login details are not valid!');
     }
-    public function logout() {
+    public function logout()
+    {
         Auth::logout();
-  
+
         return redirect()->intended('login');
     }
 }

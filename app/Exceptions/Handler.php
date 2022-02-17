@@ -13,6 +13,8 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\GuzzleException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -44,50 +46,65 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
+
+
         $this->reportable(function (Throwable $e) {
-            //
         });
-        $this->renderable(function (ValidationException $exception, $request) 
-        {    
+        $this->renderable(function (ValidationException $exception, $request) {
             $message = $exception->validator->getMessageBag();
-        
-            if($request->wantsJson())
-            {   
+
+            if ($request->wantsJson()) {
                 return $this->errorResponse($message, Response::HTTP_UNPROCESSABLE_ENTITY);
             }
             return redirect()->back()->withErrors($message);
         });
-        $this->renderable(function (AuthenticationException $exception, $request) 
-        {
-            return $this->errorResponse($exception->getMessage(), Response::HTTP_UNAUTHORIZED);
-        });
-        $this->renderable(function(BadResponseException $exception, $request) {
-          
-            return $this->errorResponse($exception->getMessage(), $exception->getCode());
-        });
-        $this->renderable(function( ClientException $exception, $request) {
 
-            $message = $exception->getResponse()->getBody();
-           
+        $this->renderable(function (NotFoundHttpException $e, $request) {
+            dd("2");
+            return response()->json(
+                "tst"
+            );
+        });
+        $this->renderable(function (AuthenticationException $exception, $request) {
+            if ($request->wantsJson()) {
+                return $this->errorResponse($exception->getMessage(), Response::HTTP_UNAUTHORIZED);
+            }
+            return redirect()->back()->withErrors($exception->getMessage());
+        });
+        $this->renderable(function (GuzzleException $exception, $request) {
+
             $code = $exception->getCode();
 
-            return $this->errorResponse($message ,$code);
+            $message = json_decode($exception->getResponse()->getBody()->getContents());
+
+            return $this->errorResponse($message, $code);
+        });
+        $this->renderable(function (BadResponseException $exception, $request) {
+
+            return $this->errorResponse($exception->getMessage(), $exception->getStatusCode());
+        });
+        $this->renderable(function (ClientException $exception, $request) {
+            dd("5");
+            $message = $exception->getResponse()->getBody();
+
+            $code = $exception->getCode();
+
+            return $this->errorResponse($message, $code);
         });
         $this->renderable(function (HttpException $exception, $request) {
-            if($request->wantsJson()) 
-            {
-                $code = $exception->getStatusCode();
-                $message = Response::$statusTexts[$code];
+
+            if ($request->wantsJson()) {
+                $message = $exception->getMessage();
+                $code = Response::$statusTexts[$message];
                 return $this->errorResponse($message, $code);
             }
             return parent::render($request, $exception);
-          
         });
         $this->renderable(function (ModelNotFoundException $exception, $request) {
+            dd("7");
             $model = strtolower(class_basename($exception->getModel()));
-            
-            return $this->errorResponse("Does not exist any instance of {$model} with the given id", Response::HTTP_NOT_FOUND);
+
+            return $this->errorResponse("Does not exist any instance of {$model} with the given id", $exception->getStatusCode());
         });
-        
     }
 }

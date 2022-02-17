@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Application;
 use App\Models\User;
 use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
@@ -13,14 +14,15 @@ class UserController extends Controller
 {
     use ApiResponser;
 
-    public function __construct(User $user)
+    public function __construct(User $user, Application $application)
     {
         $this->user = $user;
+        $this->application = $application;
     }
-    public function index() 
+    public function index()
     {
         $users = $this->user::all();
-        
+
         return $this->validResponse($users);
     }
     public function store(Request $request)
@@ -28,8 +30,7 @@ class UserController extends Controller
         $rules = [
             'name' => 'required|max:255',
             'email' => 'required|email|unique:users,email',
-            'password'=> 'required|min:8|confirmed',
-            'application_id' => 'required',
+            'password' => 'required|min:8|confirmed',
         ];
 
         $this->validate($request, $rules);
@@ -42,8 +43,10 @@ class UserController extends Controller
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
             ]);
-    
-            $user->applications()->attach($request->application_id);
+
+            $application = $this->application::where('name', $request->header('application'))->first();
+
+            $user->applications()->attach($application->id);
 
             $user->roles()->attach(2);
 
@@ -51,36 +54,35 @@ class UserController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
         }
-      
+
         return $this->validResponse($user, Response::HTTP_CREATED);
     }
     public function show($id)
-    {   
+    {
         $user = $this->user::find($id);
 
         return $this->validResponse($user);
-       
     }
     public function update(Request $request, $id)
     {
         $rules = [
             'name' => 'max:255',
             'email' => 'email|unique:user,email' . $id,
-            'password'=> 'min:8|confirmed',
+            'password' => 'min:8|confirmed',
         ];
         $this->validate($request, $rules);
 
         $user = $this->user::findOrFail($id);
 
-        if($user->isClean()) {
+        if ($user->isClean()) {
             return $this->errorResponse('At least one value must change', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-       
+
         $user->update($request->all());
 
         return $this->validResponse($user);
     }
-    public function destory($id) 
+    public function destory($id)
     {
         $user = $this->user::findOrFail($id);
 
@@ -88,7 +90,7 @@ class UserController extends Controller
 
         return $this->validResponse($user);
     }
-    public function me(Request $request) 
+    public function me(Request $request)
     {
         return $this->validResponse($request->user());
     }

@@ -38,5 +38,8 @@ return [
         'base_uri' => env('APP_TODO_URL'),
         'secret' => env('APP_TODO_SECRET')
     ],
+    'blogs' => [
+        'base_uri' => env('APP_BLOG_URL'),
+    ],
 
 ];

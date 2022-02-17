@@ -20,13 +20,13 @@ class TodoController extends Controller
     public function index()
     {
         $user = auth()->user()->id;
-       
+
         $response = $this->todoService->fetchTodos($user);
 
         return $this->successResponse($response);
     }
-    public function store(Request $request )
-    {   
+    public function store(Request $request)
+    {
         $user = auth()->user()->id;
 
         $response = $this->todoService->createTodos($request->all(), $user);

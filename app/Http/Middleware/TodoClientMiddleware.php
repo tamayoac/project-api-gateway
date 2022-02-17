@@ -16,10 +16,9 @@ class TodoClientMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if(!auth()->user()->hasRole("client") && !auth()->user()->hasApp("app_todo")) {
+        if (!auth()->user()->hasRole("Client") && !auth()->user()->hasApp("app_todo")) {
             abort(401, 'This action is unauthorized.');
         }
         return $next($request);
-        
     }
 }

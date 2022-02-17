@@ -6,10 +6,13 @@
        
         <form action="{{route('login')}}" method="POST" class="w-full bg-white shadow-md rounded left-0 right-0 px-8 pt-6 pb-8 mb-4 mt-44 z-10 max-w-lg">
             @csrf
+         
             <div class="font-bold text-2xl uppercase text-blue-400 pb-8 w-full">Administrator</div>
+         
             @if(session('success'))
                 <div class="text-red-500 text-xs w-full px">{{session('success')}}</div>
             @endif
+            <p class="text-red-500 text-xs">{{$errors->first('message')}}</p>
             <input placeholder="username" 
                 class="{{$errors->has('email') ? 'border-red-500' : ''}} appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline bg-white" 
                 type="text"

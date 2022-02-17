@@ -17,17 +17,18 @@
                     </svg>
                     </button>
                 </div>
+            
                 <nav class="flex-col flex-grow pb-4 md:pb-0 md:flex md:justify-end md:flex-row">
-                    <a href="/users" class="px-4 py-2 mt-2 text-sm font-semibold text-black rounded-sm hover:bg-blue-500 hover:text-white uppercase">Users</p>
-                    <a href="/logout" class="px-4 py-2 mt-2 text-sm font-semibold rounded-sm hover:bg-blue-500 hover:text-white uppercase">Logout</a>
+                    <a href="/dashboard" class="mx-1 px-2 py-2 mt-2 text-sm font-semibold text-black rounded-sm hover:bg-blue-500 hover:text-white uppercase {{request()->is('dashboard') ? 'bg-blue-500 text-white' : ''}}">Dashboard</p>
+                    <a href="/applications" class="mx-1 px-2 py-2 mt-2 text-sm font-semibold text-black rounded-sm hover:bg-blue-500 hover:text-white uppercase {{request()->is('applications') || request()->is('applications/*') ? 'bg-blue-500 text-white' : ''}}">Applications</p>
+                    <a href="/users" class="mx-1 px-2 py-2 mt-2 text-sm font-semibold text-black rounded-sm hover:bg-blue-500 hover:text-white uppercase {{request()->is('users') ? 'bg-blue-500 text-white' : ''}}">Users</p>
+                    <a href="/logout" class="mx-1 px-2 py-2 mt-2 text-sm font-semibold rounded-sm hover:bg-blue-500 hover:text-white uppercase">Logout</a>
                 </nav>
             </div>
           </div>
         @endauth()
         <div class="container-fluid">
-        
             @yield('content')
-            
         </div>
     </div>
 </div>

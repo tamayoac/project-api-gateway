@@ -7,7 +7,7 @@ use App\Traits\ConsumeExternalService;
 class TodoService
 {
     use ConsumeExternalService;
-    
+
     public $baseUri;
 
     public $secret;
@@ -19,12 +19,14 @@ class TodoService
     }
     public function fetchTodos($user)
     {
+
         return $this->performRequest('GET', "/todos/{$user}");
     }
     public function createTodos($todos, $user)
     {
+
         return $this->performRequest('POST', "/todos/${user}", $todos);
-    } 
+    }
     public function fetchTodo($todo, $user)
     {
         return $this->performRequest('GET', "/todos/{$user}/{$todo}");

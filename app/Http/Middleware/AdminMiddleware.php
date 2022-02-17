@@ -3,24 +3,25 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
-class CheckIfClientMiddleware
+class AdminMiddleware
 {
     /**
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @return mixed
+     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     public function handle(Request $request, Closure $next)
     {
 
         if (!auth()->user()->hasRole("Admin")) {
-            abort(401, 'Unauthorized');
+            return Redirect::guest('login')->withErrors(['message' => 'Unauthenticated User']);
         }
+
         return $next($request);
     }
 }
